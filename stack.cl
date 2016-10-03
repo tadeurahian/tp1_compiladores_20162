@@ -38,9 +38,13 @@ class Stack inherits IO {
   }};
 
   pop() : StackElement {{
-    temp <- head;
-    head <- head.getElementBelow();
-    temp;
+    if not isvoid head then {
+      temp <- head;
+      head <- head.getElementBelow();
+      temp;
+    } else 
+      head
+    fi;
   }};
 
   printStack() : Object {{
@@ -60,9 +64,9 @@ class Main inherits IO {
    stringRead : String;
    stack : Stack;
    tempElement : StackElement;
-   poppedValue : StackElement;
-   poppedValue1 : StackElement;
-   poppedValue2 : StackElement;
+   command : StackElement;
+   head1 : StackElement;
+   head2 : StackElement;
    intAux : Int;
    a2i : A2I;
 
@@ -84,32 +88,28 @@ class Main inherits IO {
         else if stringRead = "x" then
           keepGoing <- false
         else if stringRead = "e" then {
-          poppedValue <- stack.pop();
+          command <- stack.pop();
 
-          if poppedValue = "+" then {
-            poppedValue1 <- stack.pop();
-            poppedValue2 <- stack.pop();
+          if not isvoid command then {
+            if commmand = "+" then {
+              head1 <- stack.pop();
+              head2 <- stack.pop();
 
-            intAux <- a2i.c2i(poppedValue1) + a2i.c2i(poppedValue2);
+              intAux <- a2i.c2i(head1.getValue()) + a2i.c2i(head2.getValue());
+              out_string(a2i.i2c(intAux));
+            } else if command = "s" then {
+              head1 <- stack.pop();
+              head2 <- stack.pop();
 
-            out_string(a2i.i2c(intAux));
+              stack.push(head1);
+              stack.push(head2);
+            } fi fi;
           } else {
-            poppedValue1 <- stack.pop();
-            poppedValue2 <- stack.pop();
-
-            stack.push(poppedValue2);
-            stack.push(poppedValue1);
-          }
-          fi;
-        }
-        else {
-          tempElement <- new StackElement;
-          tempElement.init(stringRead);
-          stack.push(tempElement);
-        }
-        fi fi fi;
-      }
-      pool;
+            tempElement <- new StackElement;
+            tempElement.init(stringRead);
+            stack.push(tempElement);
+          } fi;
+        } fi fi fi;
+      } pool;
    }};
-
 };
