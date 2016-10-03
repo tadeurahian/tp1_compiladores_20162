@@ -103,13 +103,17 @@ class Main inherits IO {
 
               stack.push(head1);
               stack.push(head2);
-            } fi fi;
+            }
+            fi fi;
           } else {
             tempElement <- new StackElement;
             tempElement.init(stringRead);
             stack.push(tempElement);
-          } fi;
-        } fi fi fi;
-      } pool;
+          }
+          fi;
+        }
+        fi fi fi;
+      }
+      pool;
    }};
 };
