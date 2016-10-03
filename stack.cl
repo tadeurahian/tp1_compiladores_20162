@@ -82,6 +82,7 @@ class Main inherits IO {
         out_string(">");
         stringRead <- in_string();
         stack <- new Stack;
+        intAux <- 0;
 
         if stringRead = "d" then
           stack.printStack()
@@ -91,18 +92,20 @@ class Main inherits IO {
           command <- stack.pop();
 
           if not isvoid command then {
-            if commmand = "+" then {
+            if commmand.getValue() = "+" then {
               head1 <- stack.pop();
               head2 <- stack.pop();
 
               intAux <- a2i.c2i(head1.getValue()) + a2i.c2i(head2.getValue());
               out_string(a2i.i2c(intAux));
-            } else if command = "s" then {
-              head1 <- stack.pop();
-              head2 <- stack.pop();
+            } else if command.getValue() = "s" then {
+                head1 <- stack.pop();
+                head2 <- stack.pop();
 
-              stack.push(head1);
-              stack.push(head2);
+                stack.push(head1);
+                stack.push(head2);
+            } else {
+              stack.push(command);
             }
             fi fi;
           } else {
