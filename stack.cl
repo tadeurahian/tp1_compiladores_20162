@@ -7,122 +7,109 @@
  *  Skeleton file
  *)
 
-class StackCommand inherits IO {
-  command : String;
-  isInt : Bool;
+class StackElement {
+  elementBelow : StackElement;
+  value : String;
 
-  getCommand() : String {
-    command
+  init(val : String) : Object {
+    value <- val
   };
 
-  setCommand(com : String) : Object {
-    command <- com
+  getValue() : String {
+    value
   };
 
-  setIsIntTrue() : Object {
-    isInt <- true
+  setElementBelow(below : StackElement) : Object {
+    elementBelow <- below
   };
 
-  isInt() : Bool {
-    isInt
-  };
-};
-
-class ECommand inherits StackCommand {
-  init() : Object {
-    setCommand("e")
-  };
-};
-
-class PlusCommand inherits StackCommand {
-  init() : Object {
-    setCommand("+")
-  };
-};
-
-class SCommand inherits StackCommand {
-  init() : Object {
-    setCommand("s")
-  };
-};
-
-class DCommand inherits StackCommand {
-  init() : Object {
-    setCommand("d")
-  };
-};
-
-class IntCommand inherits StackCommand {
-  a2iObj:A2I;
-
-  init(command : Int) : Object {{
-    a2iObj <- new A2I;
-    setCommand(a2iObj.i2c(command));
-    setIsIntTrue();
-  }};
-
-  getAsInt() : Int {
-    a2iObj.c2i(getCommand())
+  getElementBelow() : StackElement {
+    elementBelow
   };
 };
 
 class Stack inherits IO {
-  top : Stack;
-  value: StackCommand;
+  head : StackElement;
+  temp : StackElement;
 
-  getStackCommand() : StackCommand {
-    value
-  };
+  push(element : StackElement) : Object {{
+    element.setElementBelow(head);
+    head <- element;
+  }};
 
-  setStackCommand(command : StackCommand) : Object {
-    value <- command
-  };
+  pop() : StackElement {{
+    temp <- head;
+    head <- head.getElementBelow();
+    temp;
+  }};
 
-  setTop(newTop : Stack) : Object {
-    top <- newTop
-  };
+  printStack() : Object {{
+    temp <- head;
 
-  getTop() : Stack {
-    top
-  };
+    while not isvoid temp loop {
+      out_string(temp.getValue());
+      out_string("\n");
+      temp <- temp.getElementBelow();
+    }
+    pool;
+  }};
 };
 
 class Main inherits IO {
    keepGoing : Bool;
    stringRead : String;
-   currentCommand : StackCommand;
-
-  createCommand(char : String) : StackCommand {{
-    if char = "e" then
-      (new ECommand).init()
-    else if char = "d" then
-      (new DCommand).init()
-    else if char = "+" then
-      (new PlusCommand).init()
-    else if char = "s" then
-      (new SCommand).init()
-    else
-      (new IntCommand).init(char)
-   }};
+   stack : Stack;
+   tempElement : StackElement;
+   poppedValue : StackElement;
+   poppedValue1 : StackElement;
+   poppedValue2 : StackElement;
+   intAux : Int;
+   a2i : A2I;
 
    main() : Object {{
-      keepGoing <- true;
-      commandRead <- "";
-
-      out_string("TP 1 Compiladores 2016/2\n");
+      out_string("TP 1 Compiladores 2016/2 - Tadeu Rahian\n");
       out_string("Digite seus comandos:\n");
+
+      keepGoing <- true;
+      stringRead <- "";
+      a2i <- new A2I;
 
       while keepGoing loop {
         out_string(">");
         stringRead <- in_string();
+        stack <- new Stack;
 
-        if stringRead = x then {
-          keepGoing <- false;
-          fi
+        if stringRead = "d" then
+          stack.printStack()
+        else if stringRead = "x" then
+          keepGoing <- false
+        else if stringRead = "e" then {
+          poppedValue <- stack.pop();
+
+          if poppedValue = "+" then {
+            poppedValue1 <- stack.pop();
+            poppedValue2 <- stack.pop();
+
+            intAux <- a2i.c2i(poppedValue1) + a2i.c2i(poppedValue2);
+
+            out_string(a2i.i2c(intAux));
+          } else {
+            poppedValue1 <- stack.pop();
+            poppedValue2 <- stack.pop();
+
+            stack.push(poppedValue2);
+            stack.push(poppedValue1);
+          }
+          fi;
         }
-
-        currentCommand <- createCommand(stringRead);
+        else {
+          tempElement <- new StackElement;
+          tempElement.init(stringRead);
+          stack.push(tempElement);
+        }
+        fi fi fi;
       }
+      pool;
    }};
 
 };
