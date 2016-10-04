@@ -31,10 +31,16 @@ class StackElement {
 class Stack inherits IO {
   head : StackElement;
   temp : StackElement;
+  size : Int;
+
+  init() : Object {{
+    size <- 0;
+  }};
 
   push(element : StackElement) : Object {{
     element.setElementBelow(head);
     head <- element;
+    size <- size + 1;
   }};
 
   pop() : StackElement {{
@@ -42,10 +48,15 @@ class Stack inherits IO {
       temp <- head;
       head <- head.getElementBelow();
       temp;
-    } else 
+      size <- size - 1;
+    } else
       head
     fi;
   }};
+
+  getSize() : Int {
+    size
+  };
 
   printStack() : Object {{
     temp <- head;
@@ -89,9 +100,9 @@ class Main inherits IO {
         else if stringRead = "x" then
           keepGoing <- false
         else if stringRead = "e" then {
-          command <- stack.pop();
+          if 2 < stack.getSize() then {
+            command <- stack.pop();
 
-          if not isvoid command then {
             if commmand.getValue() = "+" then {
               head1 <- stack.pop();
               head2 <- stack.pop();
@@ -108,12 +119,11 @@ class Main inherits IO {
               stack.push(command);
             }
             fi fi;
-          } else {
-            tempElement <- new StackElement;
-            tempElement.init(stringRead);
-            stack.push(tempElement);
-          }
-          fi;
+          } fi;
+        } else {
+          tempElement <- new StackElement;
+          tempElement.init(stringRead);
+          stack.push(tempElement);
         }
         fi fi fi;
       }
