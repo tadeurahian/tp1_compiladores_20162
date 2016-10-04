@@ -43,14 +43,21 @@ class Stack inherits IO {
     size <- size + 1;
   }};
 
+  pushValue(value : String) : Object {{
+    temp <- new StackElement;
+    temp.init(value);
+    push(temp);
+  }};
+
   pop() : StackElement {{
     if not isvoid head then {
       temp <- head;
       head <- head.getElementBelow();
-      temp;
       size <- size - 1;
-    } else
-      head
+      temp;
+    } else {
+      head;
+    }
     fi;
   }};
 
@@ -74,7 +81,6 @@ class Main inherits IO {
    keepGoing : Bool;
    stringRead : String;
    stack : Stack;
-   tempElement : StackElement;
    command : StackElement;
    head1 : StackElement;
    head2 : StackElement;
@@ -88,11 +94,13 @@ class Main inherits IO {
       keepGoing <- true;
       stringRead <- "";
       a2i <- new A2I;
+      stack <- new Stack;
+
+      stack.init();
 
       while keepGoing loop {
         out_string(">");
         stringRead <- in_string();
-        stack <- new Stack;
         intAux <- 0;
 
         if stringRead = "d" then
@@ -103,27 +111,29 @@ class Main inherits IO {
           if 2 < stack.getSize() then {
             command <- stack.pop();
 
-            if commmand.getValue() = "+" then {
+            if command.getValue() = "+" then {
               head1 <- stack.pop();
               head2 <- stack.pop();
 
               intAux <- a2i.c2i(head1.getValue()) + a2i.c2i(head2.getValue());
-              out_string(a2i.i2c(intAux));
-            } else if command.getValue() = "s" then {
-                head1 <- stack.pop();
-                head2 <- stack.pop();
 
-                stack.push(head1);
-                stack.push(head2);
+              stack.pushValue(a2i.i2c(intAux));
+            } else if command.getValue() = "s" then {
+              head1 <- stack.pop();
+              head2 <- stack.pop();
+
+              stack.push(head1);
+              stack.push(head2);
             } else {
               stack.push(command);
             }
             fi fi;
-          } fi;
+          } else {
+            "nothing";
+          }
+          fi;
         } else {
-          tempElement <- new StackElement;
-          tempElement.init(stringRead);
-          stack.push(tempElement);
+          stack.pushValue(stringRead);
         }
         fi fi fi;
       }
